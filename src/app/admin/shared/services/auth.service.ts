@@ -5,28 +5,47 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { tap } from 'rxjs/operators'
 
-@Injectable({providedIn: 'root'})
+@Injectable()
 export class AuthService {
+
   constructor(private http: HttpClient) { }
 
-  get token(): string {
-    return '';
+  get token(): string | null {
+    const fbTokenExp = localStorage.getItem('fb-token-exp') || 'Default'
+    const expDate = new Date(fbTokenExp);
+
+    if (new Date() > expDate) {
+      this.logout();
+      return null;
+    }
+
+    return localStorage.getItem('fb-token');
   }
 
-  login(user: User): Observable<any> {
-    return this.http.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.apiKey}`, user)
+  login(user: User): Observable<FirebaseAuthResponse | null> {
+    user.returnSecureToken = true;
+    return this.http.post<FirebaseAuthResponse | null>(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.apiKey}`, user)
       .pipe(
         tap(this.setToken)
       )
   }
 
-  logout() {}
+  logout() {
+    this.setToken(null);
+  }
 
   isAuth(): boolean {
     return !!this.token
   }
 
-  private setToken(response: FirebaseAuthResponse) {
-    console.log(response)
+  private setToken(response: FirebaseAuthResponse | null) {
+    if (response) {
+      const expDate = new Date(new Date().getTime() + +response.expiresIn * 1000);
+      localStorage.setItem('fb-token', response.idToken);
+      localStorage.setItem('fb-token-exp', expDate.toString());
+    } else {
+      localStorage.clear();
+    }
+    return response
   }
 }
