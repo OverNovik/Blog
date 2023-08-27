@@ -5,6 +5,10 @@
     {{ error }}
   </div>
 
+  <div class="alert alert-message" *ngIf="message">
+    {{ message }}
+  </div>
+
   <div [ngClass]="{invalid: form.get('email')?.touched && form.get('email')?.invalid}" class="form-control">
     <label for="email">Email:</label>
     <input type="email" id="email" formControlName="email">
