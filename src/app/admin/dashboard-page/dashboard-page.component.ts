@@ -11,10 +11,11 @@ import { PostService } from 'src/app/shared/post.service';
 export class DashboardPageComponent implements OnInit, OnDestroy{
   posts: Post[] = []
   postSub!: Subscription
+  searchStr = ''
 
   constructor(private postsService: PostService) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.postsService.getAll().subscribe((posts) => {
       this.posts = posts
     })
