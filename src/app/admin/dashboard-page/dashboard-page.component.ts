@@ -11,6 +11,7 @@ import { PostService } from 'src/app/shared/post.service';
 export class DashboardPageComponent implements OnInit, OnDestroy{
   posts: Post[] = []
   postSub!: Subscription
+  dSub!: Subscription
   searchStr = ''
 
   constructor(private postsService: PostService) {}
@@ -21,11 +22,19 @@ export class DashboardPageComponent implements OnInit, OnDestroy{
     })
   }
 
-  remove(id: string | undefined) {}
+  remove(id: string | undefined) {
+    this.dSub = this.postsService.remove(id as string).subscribe(() => {
+      this.posts = this.posts.filter((post) => post.id !== id)
+    })
+  }
 
   ngOnDestroy(): void {
     if (this.postSub) {
       this.postSub.unsubscribe()
+    }
+
+    if (this.dSub) {
+      this.dSub.unsubscribe()
     }
   }
 }
