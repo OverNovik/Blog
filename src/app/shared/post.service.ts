@@ -46,4 +46,8 @@ export class PostService {
   remove(id: string): Observable<void> {
     return this.http.delete<void>(`${environment.firebaseDbUrl}/posts/${id}.json`)
   }
+
+  update(post: Post): Observable<Post> {
+    return this.http.patch<Post>(`${environment.firebaseDbUrl}/posts/${post.id}.json`, post)
+  }
 }
