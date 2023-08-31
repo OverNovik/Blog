@@ -1,20 +1,22 @@
-<div class="post">
-  <div class="header">
-    <h1>Post title</h1>
+<div *ngIf="post$ | async as post; else loading">
+  <div class="post">
+    <div class="header">
+      <h1>{{ post.title }}</h1>
 
-    <button routerLink="/" class="btn btn-link">To main</button>
-  </div>
+      <button routerLink="/" class="btn btn-link">To main</button>
+    </div>
 
-  <div class="info">
-    <strong>Author </strong>
-    <small>23.08.23</small>
-  </div>
+    <div class="info">
+      <strong>{{ post.author }} </strong>
+      <small>{{ post.date | date:'medium' }}</small>
+    </div>
 
-  <div>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat voluptas distinctio, natus deserunt nulla amet facilis molestias ad repellat sunt sapiente eius cumque est alias. Nesciunt consequatur nemo distinctio ratione.</p>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat voluptas distinctio, natus deserunt nulla amet facilis molestias ad repellat sunt sapiente eius cumque est alias. Nesciunt consequatur nemo distinctio ratione.</p>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat voluptas distinctio, natus deserunt nulla amet facilis molestias ad repellat sunt sapiente eius cumque est alias. Nesciunt consequatur nemo distinctio ratione.</p>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat voluptas distinctio, natus deserunt nulla amet facilis molestias ad repellat sunt sapiente eius cumque est alias. Nesciunt consequatur nemo distinctio ratione.</p>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugiat voluptas distinctio, natus deserunt nulla amet facilis molestias ad repellat sunt sapiente eius cumque est alias. Nesciunt consequatur nemo distinctio ratione.</p>
+    <div>
+      <quill-view-html [content]="post.text"></quill-view-html>
+    </div>
   </div>
 </div>
+
+<ng-template #loading>
+  <p class="text-center">Loading...</p>
+</ng-template>
