@@ -1,4 +1,4 @@
-import { LOCALE_ID, NgModule, Provider } from '@angular/core';
+import { LOCALE_ID, NgModule, Provider, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
@@ -11,7 +11,9 @@ import { SharedModule } from './shared/shared.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthIntercepter } from './shared/auth.interceptor';
 import { registerLocaleData } from '@angular/common';
-import localeRu from '@angular/common/locales/ru'
+import localeRu from '@angular/common/locales/ru';
+import { ServiceWorkerModule } from '@angular/service-worker'
+import { environment } from 'src/environments/environment';
 
 registerLocaleData(localeRu, 'ru')
 
@@ -32,7 +34,13 @@ const INTERCEPTER_PROVIDER: Provider = {
   imports: [
     BrowserModule,
     AppRoutingModule,
-    SharedModule
+    SharedModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
   ],
   providers: [INTERCEPTER_PROVIDER, { provide: LOCALE_ID, useValue: 'ru' }],
   bootstrap: [AppComponent]
